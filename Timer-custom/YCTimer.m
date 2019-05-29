@@ -12,6 +12,7 @@
 
 static NSMutableDictionary *timers_;
 static dispatch_semaphore_t semaphore_;
+
 + (void)initialize
 {
     if (self == [YCTimer class]) {
@@ -56,18 +57,13 @@ static dispatch_semaphore_t semaphore_;
 
 + (void)cancelTask:(NSString *)name {
     if(name.length == 0) return;
-    dispatch_source_t timer = timers_[name];
     dispatch_semaphore_wait(semaphore_, DISPATCH_TIME_FOREVER);
+    dispatch_source_t timer = timers_[name];
     if (timer) {
         dispatch_source_cancel(timers_[name]);
         [timers_ removeObjectForKey:name];
     }
     dispatch_semaphore_signal(semaphore_);
-}
-
-- (void)dealloc
-{
-    NSLog(@"%s",__func__);
 }
 
 @end
